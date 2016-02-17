@@ -338,4 +338,8 @@ class Aether {
         }
         return false;
     }
+
+    public function getServiceLocator() {
+        return $this->sl;
+    }
 }
