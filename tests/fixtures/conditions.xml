@@ -1,0 +1,13 @@
+<config>
+    <site name="*">
+        <urlRules>
+            <rule match="martinyeah">
+                <section>Generic</section>
+                <option name="martinStatus">dritkul</option>
+                <condition option="sexyMode">
+                    <option name="martinStatus">sexy</option>
+                </condition>
+            </rule>
+        </urlRules>
+    </site>
+</config>

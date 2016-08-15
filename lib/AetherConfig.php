@@ -420,9 +420,11 @@ class AetherConfig {
         else {
             $nodelist = $node;
         }
+
         foreach ($nodelist as $child) {
             if ($child instanceof DOMText)
                 continue;
+
             switch ($child->nodeName) {
                 case 'section': 
                     $nodeData['section'] = $child->nodeValue;
@@ -498,6 +500,20 @@ class AetherConfig {
                         'template' => $template
                     ] + $nodeConfig;
                     break;
+
+                case 'condition':
+                    $optionKey = $child->getAttribute('option');
+                    if (isset($this->options[$optionKey]) &&
+                        $this->options[$optionKey] === true)
+                    {
+                        $nodeData = array_merge(
+                            $nodeData,
+                            $this->getNodeConfig($child)
+                        );
+                    }
+
+                    break;
+
             }
         }
 
@@ -698,6 +714,10 @@ class AetherConfig {
         $this->urlVariables = [];
         $this->section = null;
         $this->template = null;
+    }
+
+    public function reload() {
+        $this->loadConfigFromConfigNode(end($this->matchedNodes));
     }
 
     public function reloadConfigFromDefaultRule() {

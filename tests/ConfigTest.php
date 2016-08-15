@@ -15,19 +15,19 @@ require_once(AETHER_PATH . 'lib/AetherExceptions.php');
  */
 
 class AetherConfigTest extends PHPUnit_Framework_TestCase {
-    private function getConfig() {
-        return new AetherConfig(AETHER_PATH . 'tests/fixtures/aether.config.xml');
+    private function getConfig($filename) {
+        return new AetherConfig(AETHER_PATH . 'tests/fixtures/' . $filename);
     }
 
     public function testEnvironment() {
         $this->assertTrue(class_exists('AetherConfig'));
     }
 
-    private function getLoadedConfig($url) {
+    private function getLoadedConfig($url, $configFilename = 'aether.config.xml') {
         $aetherUrl = new AetherUrlParser;
         $aetherUrl->parse($url);
 
-        $conf = $this->getConfig();
+        $conf = $this->getConfig($configFilename);
         $conf->matchUrl($aetherUrl);
 
         return $conf;
@@ -124,5 +124,17 @@ class AetherConfigTest extends PHPUnit_Framework_TestCase {
         $conf->reloadConfigFromDefaultRule();
 
         $this->assertEquals('NotFoundSection', $conf->getSection());
+    }
+
+    public function testConditions() {
+        $conf = $this->getLoadedConfig("http://raw.no/martinyeah", 'conditions.xml');
+        $options = $conf->getOptions();
+        $this->assertEquals('dritkul', $options['martinStatus']);
+
+        $conf->setOption('sexyMode', true);
+        $conf->reload();
+
+        $options = $conf->getOptions();
+        $this->assertEquals('sexy', $options['martinStatus']);
     }
 }
